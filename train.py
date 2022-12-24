@@ -8,9 +8,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import random
 import warnings
-import pytorch_fl
-import pytorch_iou
-import pytorch_ssim
 from tqdm import tqdm
 from dataloader import test_image_preprocess, train_image_preprocess, get_loader
 from util import Optimizer, Scheduler
@@ -47,15 +44,6 @@ class Trainer():
                                        transform=self.train_transform, seed=args.seed)
         # Model
         self.model = Net(args).to(self.device)
-        # self.model = Net(args).cuda('cuda:1')
-
-        # parameter
-        base, head = [], []
-        for name, param in self.model.named_parameters():
-            if 'backbone' in name:
-                base.append(param)
-            else:
-                head.append(param)
 
         if args.multi_gpu:
             self.model = nn.DataParallel(self.model).to(self.device)
