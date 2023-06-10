@@ -18,6 +18,12 @@ from test import Test
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '1,2' 
 
+def adjust_lr(optimizer, init_lr, epoch, decay_rate=0.1, decay_epoch=20):
+    decay = decay_rate ** (epoch // decay_epoch)
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = init_lr*decay
+        print('decay_epoch: {}, Current_LR: {}'.format(decay_epoch, init_lr*decay))
+
 def iou(pred, mask):
     pred = torch.sigmoid(pred)
     inter = ((pred * mask)).sum(dim=(2, 3))
